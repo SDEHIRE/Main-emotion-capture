@@ -63,18 +63,16 @@ def upload_file():
                 # Since DeepFace returns a list of dictionaries, access the first element
                 analysis_result = analysis[0]
 
-                # Extracting the dominant emotion and the associated confidence
+                # Convert np.float32 values to regular float before inserting into MongoDB
+                emotion_data = {emotion: float(value) for emotion, value in analysis_result['emotion'].items()}
                 dominant_emotion = analysis_result['dominant_emotion']
-                confidence = analysis_result['emotion'][dominant_emotion]
-
-                # All detected emotions and their corresponding confidence scores
-                all_emotions = analysis_result['emotion']
+                confidence = emotion_data[dominant_emotion]
 
                 # Prepare the data to be stored in MongoDB
                 analysis_data = {
                     "dominant_emotion": dominant_emotion,
                     "confidence": confidence,
-                    "all_emotions": all_emotions
+                    "all_emotions": emotion_data
                 }
 
                 # Insert the analysis result into MongoDB
@@ -84,7 +82,7 @@ def upload_file():
                     'message': 'File uploaded and emotion analysis successful',
                     'dominant_emotion': dominant_emotion,
                     'confidence': confidence,
-                    'all_emotions': all_emotions
+                    'all_emotions': emotion_data
                 }), 200
 
             except Exception as e:
