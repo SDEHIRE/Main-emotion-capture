@@ -4,4 +4,6 @@ flask-cors
 deepface
 opencv-python
 Pillow
-tensorflow==2.16.0
+tensorflow
+gunicorn
+tf-keras
