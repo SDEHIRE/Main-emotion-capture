@@ -7,3 +7,4 @@ Pillow
 tensorflow
 gunicorn
 tf-keras
+pymongo
