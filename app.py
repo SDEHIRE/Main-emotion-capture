@@ -4,7 +4,6 @@ from werkzeug.utils import secure_filename
 from flask_cors import CORS
 import io
 from deepface import DeepFace
-import cv2
 import numpy as np
 from PIL import Image
 from pymongo import MongoClient
@@ -61,12 +60,15 @@ def upload_file():
                 if not analysis or len(analysis) == 0:
                     raise ValueError("No emotion analysis results found.")
 
-                # Extracting the emotion with the highest confidence
-                dominant_emotion = analysis['dominant_emotion']
-                confidence = analysis['emotion'][dominant_emotion]
+                # Since DeepFace returns a list of dictionaries, access the first element
+                analysis_result = analysis[0]
+
+                # Extracting the dominant emotion and the associated confidence
+                dominant_emotion = analysis_result['dominant_emotion']
+                confidence = analysis_result['emotion'][dominant_emotion]
 
                 # All detected emotions and their corresponding confidence scores
-                all_emotions = analysis['emotion']
+                all_emotions = analysis_result['emotion']
 
                 # Prepare the data to be stored in MongoDB
                 analysis_data = {
